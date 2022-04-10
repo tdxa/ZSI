@@ -50,27 +50,27 @@ def reverse_individual_rating(data):
     return [max_rate + 1 - x[1] for x in data]
 
 
-def selection_tournament(data):
-    tournament = [random.sample(data, 3) for _ in range(5)]
+def selection_tournament(data, k, n):
+    tournament = [random.sample(data, k) for _ in range(n)]
     ratings = []
 
-    for i in range(len(tournament)):
-        ratings.append([c[1] for c in tournament[i]])
+    for i in range(n):
+        ratings.append([indvidual[1] for indvidual in tournament[i]])
 
-    winners_indexes = [c.index(min(c)) for c in ratings]
+    winners_indexes = [rate.index(min(rate)) for rate in ratings]
 
     new_population = []
-    for i in range(len(tournament)):
+    for i in range(n):
         new_population.append(tournament[i][winners_indexes[i]])
 
     return new_population
 
 
-def selection_roulette(data):
+def selection_roulette(data, k):
     new_rating = reverse_individual_rating(data)
     sum_rating = sum(new_rating)
     probabilities = [p / sum_rating for p in new_rating]
-    new_pop = random.choices(data, probabilities, k=4)
+    new_pop = random.choices(data, probabilities, k=k)
 
     return new_pop
 
