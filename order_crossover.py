@@ -3,15 +3,15 @@ import random
 from type import Population, Individual
 
 
-def order_xover(parent_1: Individual, parent_2: Individual, start: int, stop: int):
+def order_xover(parent_1: Individual, parent_2: Individual, start_crossover: int, stop_crossover: int):
     child = [None] * len(parent_1)
 
     # Copy a slice from first parent:
-    child[start:stop] = parent_1[start:stop]
+    child[start_crossover:stop_crossover] = parent_1[start_crossover:stop_crossover]
 
     # Fill using order from second parent:
-    b_ind = stop
-    c_ind = stop
+    b_ind = stop_crossover
+    c_ind = stop_crossover
     l = len(parent_1)
     while None in child:
         if parent_2[b_ind % l] not in child:

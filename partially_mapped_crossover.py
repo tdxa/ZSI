@@ -1,10 +1,10 @@
 import random
 
 
-def pmx_get_child(parent_1, parent_2, start_crossover, stop_crossover, m):
-    child = [None] * m
+def pmx_get_child(parent_1, parent_2, start_crossover, stop_crossover):
+    child = [None] * len(parent_1)
 
-    # Copy slice between crossover points
+    # Copy points between crossover start & stop from parent_1
     child[start_crossover:stop_crossover] = parent_1[start_crossover:stop_crossover]
 
     for index, point in enumerate(parent_2[start_crossover:stop_crossover]):
@@ -21,21 +21,23 @@ def pmx_get_child(parent_1, parent_2, start_crossover, stop_crossover, m):
     return child
 
 
-def pmx_v2(data):
+def pmx_v2(data, chance_crossing: float):
     individual_1, individual_2 = data
     m = len(individual_1)
-    # crossover_points = sorted(random.sample(random.randint(0,m), 2))
+
     start_crossover = random.randint(0, m - (m // 2))
     stop_crossover = start_crossover + (m // 2)
-    print("DATA", data)
-    print("POINTS", [start_crossover, stop_crossover])
-    s = pmx_get_child(individual_1, individual_2, start_crossover, stop_crossover, m)
-    f = pmx_get_child(individual_2, individual_1, start_crossover, stop_crossover, m)
 
-    print("CHILD 1:", s)
-    print("CHILD 2:", f)
+    if random.random() >= chance_crossing:
+        return pmx_get_child(individual_1, individual_2, start_crossover, stop_crossover), pmx_get_child(individual_2,
+                                                                                                         individual_1,
+                                                                                                         start_crossover,
+                                                                                                         stop_crossover)
+    else:
+        return data
 
 
+# not working good
 def pmx(data):
     individual_1, individual_2 = data
     m = len(individual_1)
