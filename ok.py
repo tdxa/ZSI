@@ -130,23 +130,23 @@ def genetic_algorithm(file, n, epochs):
 
     while t < epochs:
         print(f"Current iteration: {t + 1}")
+
         print("   Selection...")
         population_selection = selection_roulette(population_with_rate, 8)
-        print("  ", population_selection)
+
         print("   Crossing...")
         prepare = [population_selection[i][0] for i in range(len(population_selection))]
         pairs_individuals = [prepare[i:i + 2] for i in range(0, len(population_selection), 2)]
         population_crossing = []
         for pair in pairs_individuals:
             population_crossing += pmx(pair)
-        print(population_crossing)
 
         print("   Mutation...")
         population_mutation = swap_mutation(population_crossing, chance_swap_mutation)
-        print(population_mutation)
+
         print("   Rating...")
         population_rating = rate(matrix, population_mutation)
-        print(population_rating)
+
         print(f"Iteration rate: {best_rate(population_rating)}   ||   Current best rate:")
         t += 1
 
