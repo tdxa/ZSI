@@ -4,14 +4,15 @@ from selection import selection_tournament, selection_roulette
 from swap_mutation import swap_mutation
 from utlis import read_file, print_winner, create_matrix, generate_base_population
 
-f = './data/berlin52.txt'
+FILE = './data/test.txt'
 
-n = 20
-chance_pmx_crossing = 0.85
-chance_swap_mutation = 0.66
+N = 20
+CHANCE_CROSSING = 0.85
+CHANCE_SWAP_MUTATION = 0.66
+EPOCHS = 100
 
 
-def genetic_algorithm(file, n, epochs):
+def genetic_algorithm(file: str, n: int, epochs: int, chance_swap_mutation:float, chance_crossing: float):
     t = 0
     matrix = create_matrix(read_file(file))
     population = generate_base_population(matrix, n)
@@ -76,4 +77,5 @@ if __name__ == "__main__":
     # print(af)
 
     # best_individual(pop_rat)
-    genetic_algorithm(f, n, 10)
+    genetic_algorithm(file=FILE, n=N, epochs=EPOCHS, chance_crossing=CHANCE_CROSSING,
+                      chance_swap_mutation=CHANCE_SWAP_MUTATION)

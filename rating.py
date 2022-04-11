@@ -1,7 +1,7 @@
-from typing import List
+from type import Matrix, Population, RatedPopulation, RatedIndividual
 
 
-def rate(matrix: List[List[int]], population: List[List[int]]):
+def rate(matrix: Matrix, population: Population) -> RatedPopulation:
     rates = []
     for individual in population:
         n = 0
@@ -18,7 +18,7 @@ def rate(matrix: List[List[int]], population: List[List[int]]):
     return [[population[i], rates[i]] for i in range(len(population))]
 
 
-def best_individual(population_with_rate):
+def best_individual(population_with_rate: RatedPopulation) -> RatedIndividual:
     minimum = min(x[1] for index, x in enumerate(population_with_rate))
     minimum_index = \
         [index for index, value in enumerate(population_with_rate) for i, j in enumerate(value) if j == minimum][0]

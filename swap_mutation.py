@@ -1,7 +1,9 @@
 import random
 
+from type import Population
 
-def swap_mutation(population, chance_swap_mutation):
+
+def swap_mutation(population: Population, chance_swap_mutation: float) -> Population:
     for point in population:
         for index, gen in enumerate(point):
             if random.random() > chance_swap_mutation:
