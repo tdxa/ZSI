@@ -8,9 +8,9 @@ from utlis import read_file, print_winner, create_matrix, generate_base_populati
 FILE = './data/berlin52.txt'
 
 N = 200
-K = 50
+K = 32
 EPOCHS = 1000
-CHANCE_CROSSING = 0.7
+CHANCE_CROSSING = 0.6
 CHANCE_SWAP_MUTATION = 0.04
 CHANGE_SELECTION_METHOD = (80 * EPOCHS) / 100
 CHANGE_CROSSING_METHOD = (40 * EPOCHS) / 100
