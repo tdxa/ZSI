@@ -6,10 +6,10 @@ from type import Population, Individual
 def order_xover(parent_1: Individual, parent_2: Individual, start_crossover: int, stop_crossover: int):
     child = [None] * len(parent_1)
 
-    # Copy a slice from first parent:
+    # Copy points between crossover start & stop from parent_1
     child[start_crossover:stop_crossover] = parent_1[start_crossover:stop_crossover]
 
-    # Fill using order from second parent:
+    # Fill using order from parent_2:
     b_ind = stop_crossover
     c_ind = stop_crossover
     l = len(parent_1)

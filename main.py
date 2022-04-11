@@ -8,15 +8,16 @@ from utlis import read_file, print_winner, create_matrix, generate_base_populati
 FILE = './data/berlin52.txt'
 
 N = 200
-K = 50
-EPOCHS = 10000
-CHANCE_CROSSING = 0.65
-CHANCE_SWAP_MUTATION = 0.66
+K = 24
+EPOCHS = 1000
+CHANCE_CROSSING = 0.7
+CHANCE_SWAP_MUTATION = 0.04
+CHANGE_SELECTION_METHOD = (80 * EPOCHS) / 100
 CHANGE_CROSSING_METHOD = (40 * EPOCHS) / 100
 
 
 def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutation: float, chance_crossing: float,
-                      change_crossing_method: float):
+                      change_crossing_method: float, change_selection_method: float):
     t = 0
     matrix = create_matrix(read_file(file))
     population = generate_base_population(matrix, n)
@@ -27,7 +28,7 @@ def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutati
         print(f"Current iteration: {t + 1}")
 
         print("   Selection...")
-        if (t / epochs) * 100 < (80 * epochs) / 100:
+        if (t / epochs) * 100 < change_selection_method:
             population_selection = selection_tournament(population_with_rate, k, n)
         else:
             population_selection = selection_roulette(population_with_rate, k)
@@ -42,7 +43,7 @@ def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutati
             else:
                 population_crossing += pmx_v2(pair)
         print("   Mutation...")
-        population_mutation = swap_mutation(population_crossing, chance_swap_mutation)
+        population_mutation = swap_mutation(population_crossing, chance_swap_mutation)[:]
 
         print("   Rating...")
         population_rating = rate(matrix, population_mutation)
@@ -58,4 +59,4 @@ def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutati
 
 if __name__ == "__main__":
     genetic_algorithm(file=FILE, n=N, k=K, epochs=EPOCHS, chance_crossing=CHANCE_CROSSING,
-                      chance_swap_mutation=CHANCE_SWAP_MUTATION, change_crossing_method=CHANGE_CROSSING_METHOD)
+                      chance_swap_mutation=CHANCE_SWAP_MUTATION, change_crossing_method=CHANGE_CROSSING_METHOD, change_selection_method=CHANGE_SELECTION_METHOD)
