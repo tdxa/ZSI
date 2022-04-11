@@ -1,7 +1,9 @@
 import random
 
+from type import Population, Individual
 
-def order_xover(parent_1, parent_2, start, stop):
+
+def order_xover(parent_1: Individual, parent_2: Individual, start: int, stop: int):
     child = [None] * len(parent_1)
 
     # Copy a slice from first parent:
@@ -19,9 +21,12 @@ def order_xover(parent_1, parent_2, start, stop):
     return child
 
 
-def order_xover_pair(data):
+def order_xover_pair(data: Population, chance_crossing: float):
     parent_1, parent_2 = data
     half = len(parent_1) // 2
     start = random.randint(0, len(parent_1) - half)
     stop = start + half
-    return order_xover(parent_1, parent_2, start, stop), order_xover(parent_2, parent_1, start, stop)
+    if random.random() >= chance_crossing:
+        return order_xover(parent_1, parent_2, start, stop), order_xover(parent_2, parent_1, start, stop)
+    else:
+        return data

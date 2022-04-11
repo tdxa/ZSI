@@ -1,18 +1,21 @@
 from order_crossover import order_xover_pair
+from partially_mapped_crossover import pmx_v2, pmx
 from rating import rate, best_individual
 from selection import selection_tournament, selection_roulette
 from swap_mutation import swap_mutation
 from utlis import read_file, print_winner, create_matrix, generate_base_population
 
-FILE = './data/test.txt'
+FILE = './data/berlin52.txt'
 
-N = 20
+N = 70
+EPOCHS = 10000
 CHANCE_CROSSING = 0.85
 CHANCE_SWAP_MUTATION = 0.66
-EPOCHS = 100
+CHANGE_CROSSING_METHOD = (70 * 100) / 100
 
 
-def genetic_algorithm(file: str, n: int, epochs: int, chance_swap_mutation:float, chance_crossing: float):
+def genetic_algorithm(file: str, n: int, epochs: int, chance_swap_mutation: float, chance_crossing: float,
+                      change_crossing_method: float):
     t = 0
     matrix = create_matrix(read_file(file))
     population = generate_base_population(matrix, n)
@@ -36,7 +39,10 @@ def genetic_algorithm(file: str, n: int, epochs: int, chance_swap_mutation:float
             # population_crossing += pmx_v2(pair)
             # pmx_v2(pair)
             # print("PAIR", pair)
-            population_crossing += order_xover_pair(pair)
+            if (t / 100)*100 < change_crossing_method:
+                population_crossing += order_xover_pair(pair, chance_crossing)
+            else:
+                population_crossing += pmx(pair)
         print("   Mutation...")
         population_mutation = swap_mutation(population_crossing, chance_swap_mutation)
 
@@ -78,4 +84,4 @@ if __name__ == "__main__":
 
     # best_individual(pop_rat)
     genetic_algorithm(file=FILE, n=N, epochs=EPOCHS, chance_crossing=CHANCE_CROSSING,
-                      chance_swap_mutation=CHANCE_SWAP_MUTATION)
+                      chance_swap_mutation=CHANCE_SWAP_MUTATION, change_crossing_method=CHANGE_CROSSING_METHOD)

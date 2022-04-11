@@ -1,6 +1,7 @@
 from typing import List, Union
 
 Matrix = List[List[None]]
-Population = List[List[int]]
-RatedIndividual = List[Union[List[int], int]]
+Individual = List[int]
+Population = List[Individual]
+RatedIndividual = List[Union[Individual, int]]
 RatedPopulation = List[RatedIndividual]
