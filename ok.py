@@ -45,6 +45,9 @@ def rate(matrix: List[List[int]], population: List[List[int]]):
     return [[population[i], rates[i]] for i in range(len(population))]
 
 
+def best_rate(population_with_rate):
+    return min(x[1] for x in population_with_rate)
+
 def reverse_individual_rating(data):
     max_rate = max([x[1] for x in data])
     return [max_rate + 1 - x[1] for x in data]
@@ -99,7 +102,7 @@ def pmx(data):
         result_1[temp_1], result_1[temp_2] = result_1[temp_2], result_1[temp_1]
         result_2[temp_1], result_2[temp_2] = result_2[temp_2], result_2[temp_1]
 
-    return result_1, result_2
+    return [result_1, result_2]
 
 
 def swap_mutation(population, chance_swap_mutation):
@@ -109,6 +112,9 @@ def swap_mutation(population, chance_swap_mutation):
                 mutation_point = random.randrange(5)
                 point[index], point[mutation_point] = point[mutation_point], point[index]
     return population
+
+
+best_ratings = []
 
 
 def genetic_algorithm(file, n, epochs):
@@ -125,9 +131,23 @@ def genetic_algorithm(file, n, epochs):
     while t < epochs:
         print(f"Current iteration: {t + 1}")
         print("   Selection...")
+        population_selection = selection_roulette(population_with_rate, 8)
+        print("  ", population_selection)
         print("   Crossing...")
+        prepare = [population_selection[i][0] for i in range(len(population_selection))]
+        pairs_individuals = [prepare[i:i + 2] for i in range(0, len(population_selection), 2)]
+        population_crossing = []
+        for pair in pairs_individuals:
+            population_crossing += pmx(pair)
+        print(population_crossing)
+
         print("   Mutation...")
+        population_mutation = swap_mutation(population_crossing, chance_swap_mutation)
+        print(population_mutation)
         print("   Rating...")
+        population_rating = rate(matrix, population_mutation)
+        print(population_rating)
+        print(f"Iteration rate: {best_rate(population_rating)}   ||   Current best rate:")
         t += 1
 
 
@@ -135,28 +155,28 @@ n = 6
 chance_pmx_crossing = 0.65
 chance_swap_mutation = 0.70
 
-mat = create_matrix(read_file(f))
-pop = generate_base_population(mat, n)
-pop_rat = rate(mat, pop)
+# mat = create_matrix(read_file(f))
+# pop = generate_base_population(mat, n)
+# pop_rat = rate(mat, pop)
 # print(mat)
 # print(pop)
-print("pop ratings   ", pop_rat)
+# print("pop ratings   ", pop_rat)
 
-rou = selection_tournament(pop_rat, 3, n)
-print("tournament    ", rou)
+# rou = selection_tournament(pop_rat, 3, n)
+# print("tournament    ", rou)
 # selection_roulette(pop_rat, 3)
-x = rou[0][0], rou[1][0]
+# x = rou[0][0], rou[1][0]
 # print("******    ", x)
 # print("points", crossover_points)
 # pmx(x, n, crossover_points)
-after_cross = pmx(x)
-print("PMX           ", after_cross)
+# after_cross = pmx(x)
+# print("PMX           ", after_cross)
+#
+# sw = swap_mutation(after_cross, chance_swap_mutation)
+# print("swap          ",sw)
+# print("**********")
+# af = rate(mat, sw)
+# print(af)
 
-sw = swap_mutation(after_cross, chance_swap_mutation)
-print("swap          ",sw)
-print("**********")
-af = rate(mat, sw)
-print(af)
-
-
-# genetic_algorithm(f, n, 100)
+# best_rate(pop_rat)
+genetic_algorithm(f, n, 100)
