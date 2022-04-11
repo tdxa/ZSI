@@ -2,13 +2,13 @@ import csv
 import random
 from typing import List
 
-f = './data/test.txt'
+f = './data/berlin52.txt'
 
 
 def read_file(path, delimiter=" "):
     with open(path, newline="") as file:
         next(file)
-        return [row for row in csv.reader(file, delimiter=delimiter)]
+        return [list(filter(None, row)) for row in csv.reader(file, delimiter=delimiter)]
 
 
 def create_matrix(data):
@@ -45,8 +45,21 @@ def rate(matrix: List[List[int]], population: List[List[int]]):
     return [[population[i], rates[i]] for i in range(len(population))]
 
 
-def best_rate(population_with_rate):
-    return min(x[1] for x in population_with_rate)
+def best_individual(population_with_rate):
+    # for index, p in enumerate(population_with_rate):
+    #     print("index", index)
+    #     print("p", p)
+
+    # mylist = [['a', 'b', 'c'], ['d', 'e', 'f']]
+    # 'd' in [j for i in mylist for j in i]
+    # ["{} {}".format(index1,index2) for index1,value1 in enumerate(lst) for index2,value2 in enumerate(value1) if value2==check]
+
+    minimum = min(x[1] for index, x in enumerate(population_with_rate))
+    minimum_index = \
+        [index for index, value in enumerate(population_with_rate) for i, j in enumerate(value) if j == minimum][0]
+
+    return population_with_rate[minimum_index]
+
 
 def reverse_individual_rating(data):
     max_rate = max([x[1] for x in data])
@@ -114,7 +127,8 @@ def swap_mutation(population, chance_swap_mutation):
     return population
 
 
-best_ratings = []
+def print_winner(winner):
+    print("-".join(str(point) for point in winner[0]) + " " + "".join(str(winner[1])))
 
 
 def genetic_algorithm(file, n, epochs):
@@ -122,17 +136,16 @@ def genetic_algorithm(file, n, epochs):
     matrix = create_matrix(read_file(file))
     population = generate_base_population(matrix, n)
     population_with_rate = rate(matrix, population)
-    print(matrix)
-    print("-------------------")
-    print(population)
-    print("-------------------")
-    print(population_with_rate)
+    winner = best_individual(population_with_rate)
 
     while t < epochs:
         print(f"Current iteration: {t + 1}")
 
         print("   Selection...")
-        population_selection = selection_roulette(population_with_rate, 8)
+        if t < 10000:
+            population_selection = selection_tournament(population_with_rate, 50, n)
+        else:
+            population_selection = selection_roulette(population_with_rate, 50)
 
         print("   Crossing...")
         prepare = [population_selection[i][0] for i in range(len(population_selection))]
@@ -146,14 +159,19 @@ def genetic_algorithm(file, n, epochs):
 
         print("   Rating...")
         population_rating = rate(matrix, population_mutation)
+        best = best_individual(population_rating)
 
-        print(f"Iteration rate: {best_rate(population_rating)}   ||   Current best rate:")
+        winner = best if best[1] < winner[1] else winner
+        population_with_rate = population_rating
+        print(f"Iteration rate: {best[1]}   ||   Current best rate: {winner[1]}")
         t += 1
 
+    print_winner(winner)
 
-n = 6
-chance_pmx_crossing = 0.65
-chance_swap_mutation = 0.70
+
+n = 100
+chance_pmx_crossing = 0.85
+chance_swap_mutation = 0.66
 
 # mat = create_matrix(read_file(f))
 # pop = generate_base_population(mat, n)
@@ -178,5 +196,5 @@ chance_swap_mutation = 0.70
 # af = rate(mat, sw)
 # print(af)
 
-# best_rate(pop_rat)
-genetic_algorithm(f, n, 100)
+# best_individual(pop_rat)
+genetic_algorithm(f, n, 50000)
