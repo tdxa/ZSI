@@ -8,7 +8,7 @@ from utlis import read_file, print_winner, create_matrix, generate_base_populati
 FILE = './data/berlin52.txt'
 
 N = 200
-K = 24
+K = 50
 EPOCHS = 1000
 CHANCE_CROSSING = 0.7
 CHANCE_SWAP_MUTATION = 0.04
