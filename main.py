@@ -1,18 +1,18 @@
 from order_crossover import order_xover_pair
-from partially_mapped_crossover import pmx, pmx_v2
+from partially_mapped_crossover import pmx_v2
 from rating import rate, best_individual
 from selection import selection_tournament, selection_roulette
 from swap_mutation import swap_mutation
 from utlis import read_file, print_winner, create_matrix, generate_base_population
 
-FILE = './data/berlin52.txt'
+FILE = 'data/nrw1379.txt'
 
 N = 200
 K = 32
-EPOCHS = 5000
-CHANCE_CROSSING = 0.60
-CHANCE_SWAP_MUTATION = 0.05
-CHANGE_SELECTION_METHOD = (10 * EPOCHS) / 100
+EPOCHS = 100
+CHANCE_CROSSING = 0.3
+CHANCE_SWAP_MUTATION = 0.06
+CHANGE_SELECTION_METHOD = (20 * EPOCHS) / 100
 CHANGE_CROSSING_METHOD = (40 * EPOCHS) / 100
 
 
@@ -41,7 +41,7 @@ def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutati
             if (t / epochs) * 100 < change_crossing_method:
                 population_crossing += order_xover_pair(pair, chance_crossing)
             else:
-                population_crossing += pmx_v2(pair)
+                population_crossing += pmx_v2(pair, change_crossing_method)
         print("   Mutation...")
         population_mutation = swap_mutation(population_crossing, chance_swap_mutation)[:]
 
@@ -50,6 +50,7 @@ def genetic_algorithm(file: str, n: int, k: int, epochs: int, chance_swap_mutati
         best = best_individual(population_rating)
 
         winner = best if best[1] < winner[1] else winner
+        # print("winner-----------", winner)
         population_with_rate = population_rating
         print(f"Iteration rate: {best[1]}   ||   Current best rate: {winner[1]}")
         t += 1
